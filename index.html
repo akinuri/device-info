@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Screen Info</title>
+    <title>Device Info</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         body {
-            font-family: monospace, sans-serif;
-            font-size: 15px;
+            font-family: sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 1em;
         }
         table {
             border-collapse: collapse;
@@ -25,6 +27,11 @@
 
 <table></table>
 
+<div style="display: flex; gap: 0.5em; flex-direction: column; width: fit-content; margin-top: 1em;">
+    <input type="text" placeholder="keyboard test: text" onfocus="printInfo()" />
+    <input type="number" placeholder="keyboard test: number" onfocus="printInfo()" />
+</div>
+
 <script>
     function getInfo() {
         return {
@@ -40,15 +47,25 @@
             "screen"                    : "header",
             "screen.width"              : screen.width,
             "screen.height"             : screen.height,
-            "screen.orientation.type"   : screen.orientation.type,
+            "screen.availWidth"         : screen.availWidth,
+            "screen.availHeight"        : screen.availHeight,
+            "screen.orientation.type"   : screen.orientation?.type,
             
             "navigator"                 : "header",
             "navigator.deviceMemory"    : navigator.deviceMemory,
             "navigator.hardwareConcurrency" : navigator.hardwareConcurrency,
             "navigator.language"        : navigator.language,
-            "navigator.languages"       : navigator.languages.join(", "),
+            "navigator.languages"       : navigator.languages?.join(", "),
+            "navigator.maxTouchPoints"  : navigator.maxTouchPoints,
             "navigator.platform"        : navigator.platform,
+            "navigator.product"         : navigator.product,
             "navigator.userAgent"       : navigator.userAgent,
+            "navigator.userAgentData.platform" : navigator.userAgentData?.platform,
+            "navigator.vendor"          : navigator.vendor,
+            
+            "events"                    : "header",
+            "ontouchstart"              : "ontouchstart" in window,
+            "onmousemove"               : "onmousemove" in window,
         }
     }
     function printInfo() {
@@ -59,6 +76,9 @@
             let value = info[piece];
             let row = null;
             if (value == "header") {
+                if (value == undefined) {
+                    value = "<span style='opacity: 0.25'>" + value + "</span>";
+                }
                 row = `<tr>
                     <td colspan="2"><b>${piece}</b></td>
                 </tr>`;
@@ -73,6 +93,7 @@
     }
     window.addEventListener("load", printInfo);
     window.addEventListener("resize", printInfo);
+    window.addEventListener("scroll", printInfo);
 </script>
 
 </body>
